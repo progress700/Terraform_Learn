@@ -3,44 +3,33 @@ provider "aws" {
   profile = "Developer"
 }
 
-resource "aws_instance" "orisaya_1" {
-  ami                    = "ami-089950bc622d39ed8"
+# Creating EC2 Instance
+resource "aws_instance" "web-server-1" {
+  ami                    = "ami-09e2d756e7d78558d"
   instance_type          = "t2.micro"
-  vpc_security_group_ids = [aws_security_group.ori_sg.id]
+  vpc_security_group_ids = [aws_security_group.web-server.id]
 
   user_data = <<-EOF
-                #!/bin/bash
-                echo "Hello, World" > index.html
-                nohup busybox httpd -f -p 8080 &
-                EOF
+              #!/bin/bash
+              echo "Hello, World" > index.html
+              nohup busybox httpd -f -p ${var.server_port} &
+              EOF
+
+  user_data_replace_on_change = true
 
   tags = {
-    Name = "ori_1"
-    Dept = "testing"
+    Name = "web-server_1"
   }
 }
 
-/*
-# Without variable
-resource "aws_security_group" "ori_sg" {
-  name = "ori_sg"
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-} */
+resource "aws_security_group" "web-server" {
 
-# using variable for the server port
-resource "aws_security_group" "ori_sg" {
-  name = "ori_sg"
+  # name = var.security_group_name
+
   ingress {
-    cidr_blocks = ["0.0.0.0/0"]
     from_port   = var.server_port
     to_port     = var.server_port
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
-
 }
-      
