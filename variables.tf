@@ -1,11 +1,23 @@
 variable "server_port" {
-  description = "Server port HTTP requests"
+  description = "The port the server will use for HTTP requests"
   type        = number
   default     = 8080
 }
 
-variable "security_group_name" {
-  description = "The name of the security group"
+variable "alb_name" {
+  description = "The name of the ALB"
   type        = string
-  default     = "terraform-example-instance"
+  default     = "terraform-asg-webserver"
+}
+
+variable "webserver_security_group_name" {
+  description = "The name of the security group for the EC2 Instances"
+  type        = string
+  default     = "terraform-webserver"
+}
+
+variable "alb_security_group_name" {
+  description = "The name of the security group for the ALB"
+  type        = string
+  default     = "terraform-example-alb"
 }
